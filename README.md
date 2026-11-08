@@ -2,20 +2,26 @@
 
 Point your camera at anything. It becomes a live engineering drawing: ink edges, section hatching, dimension callouts, a parts list (BOM) and a title block.
 
-Static site, no build step. Everything runs in the browser.
+React + Vite + Tailwind v4 + shadcn/ui. Everything runs in the browser; no server.
 
 - **Edges + hatching**: WebGL2 shader (two-scale Sobel on mip-blurred luminance)
 - **Depth**: Depth Anything V2 small via transformers.js on WebGPU (optional; silhouettes get heavy lines, background fades)
 - **Callouts**: MediaPipe EfficientDet-Lite0 object detection → dims from real-world size priors
 
+## Structure
+- `src/engine/blueprint.js` — framework-agnostic engine (WebGL2 shader, detection, depth, overlay, recorder). `createEngine({ canvas, video, onStatus, onRec })`
+- `src/App.tsx` — wires the engine to React state + hotkeys
+- `src/components/` — splash, status badges, toolbar (shadcn `button`, `card`, `slider`, `tooltip`, `badge`, `kbd`, `separator`)
+
 ## Run locally
 ```
-python3 -m http.server 8000   # then open http://localhost:8000
+npm i
+npm run dev      # http://localhost:5173
 ```
-Camera access needs `localhost` or HTTPS.
+Camera access needs `localhost` or HTTPS. Add more shadcn components with `npx shadcn@latest add <name>`.
 
 ## Deploy
-Push to GitHub → import the repo in Vercel (framework: Other, no build command).
+Vercel auto-deploys `main` (framework: Vite, see `vercel.json`).
 
 ## Recording the X clip
 1. Hit **HIDE UI** (H). Tap the screen to bring it back.
