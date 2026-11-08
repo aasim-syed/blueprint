@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Blueprint Vision</title>
+<meta name="description" content="Point your camera at anything. Watch reality become an engineering drawing." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bp:#0a3a7a; --ink:#e6f0ff; --acc:#7fdcff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; background:#061f45; overflow:hidden; font-family:"IBM Plex Mono",ui-monospace,monospace; color:var(--ink); -webkit-user-select:none; user-select:none; }
+  #out { position:fixed; inset:0; width:100vw; height:100vh; display:block; touch-action:manipulation; }
+  #video { display:none; }
+
+  #splash { position:fixed; inset:0; display:grid; place-items:center; z-index:10;
+    background:
+      linear-gradient(rgba(127,220,255,.07) 1px, transparent 1px) 0 0/24px 24px,
+      linear-gradient(90deg, rgba(127,220,255,.07) 1px, transparent 1px) 0 0/24px 24px,
+      linear-gradient(rgba(127,220,255,.14) 1px, transparent 1px) 0 0/120px 120px,
+      linear-gradient(90deg, rgba(127,220,255,.14) 1px, transparent 1px) 0 0/120px 120px,
+      radial-gradient(circle at 50% 40%, #0e4a9a, #051a3c);
+    transition:opacity .5s; padding:16px; }
+  #splash.gone { opacity:0; pointer-events:none; }
+  .card { border:2px solid var(--ink); outline:1px solid var(--ink); outline-offset:5px; padding:32px 28px; max-width:520px; text-align:center; }
+  .card h1 { font-size:clamp(26px,6vw,44px); letter-spacing:.12em; font-weight:700; }
+  .card .sub { margin:14px 0 26px; font-size:14px; line-height:1.6; opacity:.85; }
+  .card button { font:inherit; font-weight:700; letter-spacing:.2em; font-size:15px; color:#061f45; background:var(--ink); border:0; padding:14px 34px; cursor:pointer; }
+  .card button:hover { background:var(--acc); }
+  .card .fine { margin-top:18px; font-size:11px; opacity:.55; letter-spacing:.05em; }
+  .card .err { margin-top:14px; font-size:12px; color:#ffb3a7; min-height:1em; }
+
+  #hud { position:fixed; left:50%; transform:translateX(-50%); top:max(46px,env(safe-area-inset-top)); z-index:5; font-size:11px; letter-spacing:.06em;
+    background:rgba(4,20,48,.72); border:1px solid rgba(230,240,255,.35); padding:5px 10px; white-space:nowrap; pointer-events:none; }
+  #bar { position:fixed; left:50%; transform:translateX(-50%); bottom:max(14px,env(safe-area-inset-bottom)); z-index:5; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+    background:rgba(4,20,48,.78); border:1px solid rgba(230,240,255,.35); padding:6px; width:max-content; max-width:calc(100vw - 24px); }
+  #bar button, #bar label { font:inherit; font-size:12px; color:var(--ink); background:transparent; border:1px solid rgba(230,240,255,.4); padding:7px 10px; cursor:pointer; letter-spacing:.06em; display:flex; align-items:center; gap:6px; }
+  #bar button:hover { border-color:var(--acc); color:var(--acc); }
+  #bar button.on { background:rgba(127,220,255,.18); }
+  #rec.live { background:#c0392b; border-color:#ff7b6b; color:#fff; }
+  #bar input[type=range] { width:80px; accent-color:#7fdcff; }
+  .hidden #hud, .hidden #bar { display:none; }
+</style>
+</head>
+<body>
+  <video id="video" playsinline muted></video>
+  <canvas id="out"></canvas>
+
+  <div id="splash">
+    <div class="card">
+      <h1>BLUEPRINT VISION</h1>
+      <p class="sub">Point your camera at anything.<br />Watch reality become an engineering drawing.</p>
+      <button id="start">START</button>
+      <p class="fine">Runs entirely in your browser · video never leaves your device</p>
+      <p class="err" id="err"></p>
+    </div>
+  </div>
+
+  <div id="hud">booting…</div>
+  <div id="bar">
+    <button id="mode" title="M">◐ BLUEPRINT</button>
+    <button id="depth" class="on" title="D">DEPTH ON</button>
+    <label title="Line detail">INK <input id="ink" type="range" min="0.12" max="0.6" step="0.01" value="0.3" /></label>
+    <button id="wipe" title="Space">↻ WIPE</button>
+    <button id="flip" title="F">⇄ CAM</button>
+    <button id="rec" title="R">● REC</button>
+    <button id="hide" title="H">HIDE UI</button>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
